@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CampusLift - Architecture Diagrams</title>
+    <!-- Tailwind CSS for styling the presentation page -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Mermaid.js properly imported as an ES Module to ensure it loads correctly -->
+    <script type="module">
+        import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+        mermaid.initialize({ 
+            startOnLoad: true, 
+            theme: 'base',
+            securityLevel: 'loose',
+            flowchart: { htmlLabels: true, curve: 'basis' }
+        });
+    </script>
+    
+    <style>
+        .mermaid {
+            display: flex;
+            justify-content: center;
+            background-color: white;
+            padding: 2rem;
+            border-radius: 0.5rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            overflow-x: auto;
+        }
+        svg {
+            max-width: 100%;
+            height: auto;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 text-gray-800 font-sans antialiased p-6 md:p-12">
+
+    <div class="max-w-6xl mx-auto space-y-12">
+        
+        <!-- Header Section -->
+        <header class="text-center space-y-4">
+            <h1 class="text-4xl font-extrabold text-blue-900">CAMPUSLIFT</h1>
+            <p class="text-xl font-semibold text-gray-600">System Architecture & Visual Flowcharts</p>
+            <p class="text-sm text-gray-500">B.Tech CSE AI&ML (Section-D) - K.R. Mangalam University</p>
+            <p class="text-sm text-gray-500">Authors: Anmol Gupta, Rohit</p>
+        </header>
+
+        <!-- Diagram 1 -->
+        <section class="space-y-4">
+            <div class="bg-blue-900 text-white p-4 rounded-t-lg">
+                <h2 class="text-2xl font-bold">1. Data Pipeline & Overall System Working</h2>
+                <p class="text-sm text-blue-200">Tracking the ML data flow and user journey from app launch to ride completion.</p>
+            </div>
+            <div class="mermaid">
+flowchart TD
+    classDef startEnd fill:#d4edda,stroke:#28a745,stroke-width:2px,color:black;
+    classDef processBlue fill:#cce5ff,stroke:#007bff,stroke-width:2px,color:black;
+    classDef processRed fill:#f8d7da,stroke:#dc3545,stroke-width:2px,color:black;
+    classDef decisionYellow fill:#fff3cd,stroke:#ffc107,stroke-width:2px,color:black;
+    classDef docGrey fill:#e2e3e5,stroke:#383d41,stroke-width:2px,color:black;
+    classDef nodeRed fill:#f8d7da,stroke:#dc3545,stroke-width:2px,color:black;
+    classDef nodeYellow fill:#fff3cd,stroke:#ffc107,stroke-width:2px,color:black;
+    classDef nodeBlue fill:#cce5ff,stroke:#007bff,stroke-width:2px,color:black;
+    classDef nodeAI fill:#e1bee7,stroke:#8e24aa,stroke-width:2px,color:black;
+
+    Start(("App Launch<br>Data Collection")):::startEnd --> Auth["Access K.R. Mangalam SSO"]:::processBlue
+    Auth --> Query{"Formulate Request:<br>Ride Post or Search"}:::processRed
+    Query --> Download[/"Download API Data:<br>Traffic & Vehicle Specs"/]:::docGrey
+    Download --> Preprocess{"Data Preprocessing:<br>Clean Data & Validate IDs"}:::processRed
+    Preprocess --> Import{"Import Data to<br>MongoDB Backend"}:::decisionYellow
+    Import --> MatchAlgo{"Route Analysis:<br>Identify Spatial Matches"}:::processRed
+    MatchAlgo --> Execute["Semantic Routing Execution"]:::processBlue
+    Execute --> MLNode(("ML / Math<br>Engine")):::nodeRed
+    Execute --> GeminiNode(("✨ Gemini API<br>AI Coordinator")):::nodeAI
+    
+    MLNode --> Topic(("Cost Split<br>Modeling")):::nodeYellow
+    Topic --> Node1(("Driver Wallet<br>Update")):::nodeBlue
+    Topic --> Node2(("Rider Wallet<br>Deduction")):::nodeBlue
+    Topic --> Node3(("Platform Fee<br>Analysis")):::nodeBlue
+    
+    GeminiNode --> Interpret
+    Node1 & Node2 & Node3 --> Interpret(("Interpretation &<br>Review System")):::startEnd
+    Interpret --> Export(("Export Findings<br>End Session")):::startEnd
+            </div>
+        </section>
+
+        <!-- Diagram 2 -->
+        <section class="space-y-4">
+            <div class="bg-blue-900 text-white p-4 rounded-t-lg">
+                <h2 class="text-2xl font-bold">2. Website Inner Working (UI Topology)</h2>
+                <p class="text-sm text-blue-200">Module segregation showing how pages and features link together.</p>
+            </div>
+            <div class="mermaid">
+flowchart TD
+    classDef mainBox fill:#ffffff,stroke:#333333,stroke-width:1px,color:#000;
+    classDef innerBox fill:#f9f9f9,stroke:#666666,stroke-width:1px,color:#333;
+
+    subgraph Homepage ["Dashboard / Homepage Module"]
+        direction TB
+        H1["Show active campus rides on front page"]:::innerBox
+        H2["Link to profile, vehicle registration, and wallet"]:::innerBox
+        H3["Main search & filter menu"]:::innerBox
+        H4["✨ AI Eco-Impact Dashboard"]:::innerBox
+        H1 ~~~ H2 ~~~ H3 ~~~ H4
+    end
+    class Homepage mainBox
+
+    subgraph PostFlow ["Ride Posting Flow"]
+        direction TB
+        P1["Input Origin & Destination"]:::innerBox
+        P2["Select Verified Vehicle"]:::innerBox
+        P1 ~~~ P2
+    end
+    class PostFlow mainBox
+
+    subgraph SearchFlow ["Search Results Module"]
+        direction TB
+        S1["List of Matching Routes"]:::innerBox
+        S2["Sort by Time / Distance"]:::innerBox
+        S1 ~~~ S2
+    end
+    class SearchFlow mainBox
+
+    subgraph ActionFlow ["Ride Execution & Booking Flow"]
+        direction TB
+        A1["Book Seat & Escrow Funds"]:::innerBox
+        A2["Live Map Tracking &<br>✨ Gemini AI Ride Coordinator"]:::innerBox
+        A1 ~~~ A2
+    end
+    class ActionFlow mainBox
+
+    Homepage -->|Click Search| SearchFlow
+    Homepage -->|Click Post| PostFlow
+    SearchFlow -->|Select Ride| ActionFlow
+    PostFlow -->|Publish| Homepage
+    ActionFlow -->|Complete Trip| Homepage
+            </div>
+        </section>
+
+        <!-- Diagram 3 -->
+        <section class="space-y-4">
+            <div class="bg-blue-900 text-white p-4 rounded-t-lg">
+                <h2 class="text-2xl font-bold">3. Calculations, Impact, and Presentation</h2>
+                <p class="text-sm text-blue-200">The analytical framework mapping cost calculations to real-world impact and future ML features.</p>
+            </div>
+            <div class="mermaid">
+flowchart LR
+    classDef defineCol fill:#ffffff,stroke:#dc3545,stroke-width:4px,color:black;
+    classDef describeCol fill:#ffffff,stroke:#dc3545,stroke-width:2px,color:black;
+    classDef explainCol fill:#ffffff,stroke:#8a2be2,stroke-width:3px,color:black;
+    classDef explainAI fill:#f3e5f5,stroke:#9c27b0,stroke-width:3px,color:black;
+    classDef evaluateCloud fill:#e0ffff,stroke:#00bcd4,stroke-width:2px,color:black;
+
+    subgraph Col1 ["I. Define the Trip Variables"]
+        direction TB
+        D1["Define the parameters from a<br>System Perspective<br><br><b>What is it?</b><br>Total Distance in km<br>Current Fuel Rate<br>Vehicle Mileage"]:::defineCol
+    end
+
+    subgraph Col2 ["II. Describe the Math"]
+        direction TB
+        M1["Describe Cost Algorithm<br><b>What is the total cost?</b><br><br>Total = Distance / Mileage * Fuel Rate"]:::describeCol
+        M2["Describe Fair Split<br><b>How is it divided?</b><br><br>Cost Per Person = Total / Riders + Driver"]:::describeCol
+        M1 ~~~ M2
+    end
+
+    subgraph Col3 ["III. Explain Impact & Utility"]
+        direction TB
+        E1("Explain how and why<br>campus traffic reduces<br><br><b>Why did it happen?</b><br>Consolidating 4 solo trips into 1 vehicle"):::explainCol
+        E2("Explain how the platform<br>is useful<br><br><b>What is the value?</b><br>Reduces financial burden on students"):::explainCol
+        E3("✨ Gemini AI Storyteller<br><br><b>Engaging Users:</b><br>Generates personalized, shareable summaries of CO2 saved"):::explainAI
+        E1 ~~~ E2 ~~~ E3
+    end
+
+    subgraph Col4 ["IV. Evaluate & Predict ML Future"]
+        direction TB
+        P1((("<b>Evaluate the reliability</b><br><br>Strengths: Verified KRMU DB<br>Weaknesses: Dependency on Maps API"))):::evaluateCloud
+        P2((("<b>Predict future features</b><br><br>How will the system evolve?<br>Implementing predictive ML for surge demand"))):::evaluateCloud
+        P1 ~~~ P2
+    end
+
+    Col1 --> Col2 --> Col3 --> Col4
+            </div>
+        </section>
+
+    </div>
+</body>
+</html>
