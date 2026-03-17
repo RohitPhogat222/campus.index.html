@@ -88,48 +88,65 @@ flowchart TD
         <!-- Diagram 2 -->
         <section class="space-y-4">
             <div class="bg-blue-900 text-white p-4 rounded-t-lg">
-                <h2 class="text-2xl font-bold">2. Website Inner Working (UI Topology)</h2>
-                <p class="text-sm text-blue-200">Module segregation showing how pages and features link together.</p>
+                <h2 class="text-2xl font-bold">2. Website Inner Working (UI Topology & Authentication)</h2>
+                <p class="text-sm text-blue-200">Detailed module segregation, including the strict student verification process using Institutional SSO and University APIs.</p>
             </div>
             <div class="mermaid">
 flowchart TD
     classDef mainBox fill:#ffffff,stroke:#333333,stroke-width:1px,color:#000;
     classDef innerBox fill:#f9f9f9,stroke:#666666,stroke-width:1px,color:#333;
+    classDef highlightBox fill:#e3f2fd,stroke:#1e88e5,stroke-width:2px,color:#000;
 
-    subgraph Homepage ["Dashboard / Homepage Module"]
+    subgraph AuthFlow ["1. Security & Verification Layer"]
+        direction TB
+        V1["User Login / Registration"]:::innerBox --> V2{"Verification Method"}:::innerBox
+        V2 -->|Primary| V3["Institutional SSO<br>(Google OAuth @college.edu.in)"]:::highlightBox
+        V2 -->|Fallback| V4["Upload College ID Card<br>(Processed via OCR)"]:::innerBox
+        V3 --> V5["Query University DB API<br>(Fetch Academic Year & Branch)"]:::highlightBox
+        V4 --> V6["AI/Admin Verification"]:::innerBox
+        V5 --> V7["Status: Verified Student Profile"]:::innerBox
+        V6 --> V7
+    end
+    class AuthFlow mainBox
+
+    subgraph Homepage ["2. Dashboard / Homepage Module"]
         direction TB
         H1["Show active campus rides on front page"]:::innerBox
-        H2["Link to profile, vehicle registration, and wallet"]:::innerBox
+        H2["User Profile & Virtual Wallet Balance"]:::innerBox
         H3["Main search & filter menu"]:::innerBox
         H4["✨ AI Eco-Impact Dashboard"]:::innerBox
         H1 ~~~ H2 ~~~ H3 ~~~ H4
     end
     class Homepage mainBox
 
-    subgraph PostFlow ["Ride Posting Flow"]
+    subgraph PostFlow ["3. Ride Posting Flow"]
         direction TB
-        P1["Input Origin & Destination"]:::innerBox
-        P2["Select Verified Vehicle"]:::innerBox
-        P1 ~~~ P2
+        P1["Input Origin & Destination Maps"]:::innerBox
+        P2["Select Verified Vehicle & Mileage"]:::innerBox
+        P3["Set Departure Time & Available Seats"]:::innerBox
+        P1 ~~~ P2 ~~~ P3
     end
     class PostFlow mainBox
 
-    subgraph SearchFlow ["Search Results Module"]
+    subgraph SearchFlow ["4. Search Results Module"]
         direction TB
         S1["List of Matching Routes"]:::innerBox
-        S2["Sort by Time / Distance"]:::innerBox
-        S1 ~~~ S2
+        S2["Sort by Time / Distance / Price"]:::innerBox
+        S3["View Driver Profile & College Year"]:::innerBox
+        S1 ~~~ S2 ~~~ S3
     end
     class SearchFlow mainBox
 
-    subgraph ActionFlow ["Ride Execution & Booking Flow"]
+    subgraph ActionFlow ["5. Ride Execution & Booking Flow"]
         direction TB
         A1["Book Seat & Escrow Funds"]:::innerBox
         A2["Live Map Tracking &<br>✨ Gemini AI Ride Coordinator"]:::innerBox
-        A1 ~~~ A2
+        A3["Trip Complete: Auto-split Payment"]:::innerBox
+        A1 ~~~ A2 ~~~ A3
     end
     class ActionFlow mainBox
 
+    AuthFlow -->|Access Granted| Homepage
     Homepage -->|Click Search| SearchFlow
     Homepage -->|Click Post| PostFlow
     SearchFlow -->|Select Ride| ActionFlow
@@ -144,38 +161,39 @@ flowchart TD
                 <h2 class="text-2xl font-bold">3. Calculations, Impact, and Presentation</h2>
                 <p class="text-sm text-blue-200">The analytical framework mapping cost calculations to real-world impact and future ML features.</p>
             </div>
-            <div class="mermaid">
+            <div class="mermaid overflow-x-auto border border-gray-200 rounded-b-lg p-6">
+%%{init: {"flowchart": {"htmlLabels": true, "nodeSpacing": 60, "rankSpacing": 80}, "themeVariables": {"fontSize": "18px", "fontFamily": "arial"}}}%%
 flowchart LR
     classDef defineCol fill:#ffffff,stroke:#dc3545,stroke-width:4px,color:black;
     classDef describeCol fill:#ffffff,stroke:#dc3545,stroke-width:2px,color:black;
     classDef explainCol fill:#ffffff,stroke:#8a2be2,stroke-width:3px,color:black;
     classDef explainAI fill:#f3e5f5,stroke:#9c27b0,stroke-width:3px,color:black;
-    classDef evaluateCloud fill:#e0ffff,stroke:#00bcd4,stroke-width:2px,color:black;
+    classDef evaluateCloud fill:#e0ffff,stroke:#00bcd4,stroke-width:3px,color:black;
 
-    subgraph Col1 ["I. Define the Trip Variables"]
+    subgraph Col1 ["<b style='font-size:22px;'>I. Define the Trip Variables</b>"]
         direction TB
-        D1["Define the parameters from a<br>System Perspective<br><br><b>What is it?</b><br>Total Distance in km<br>Current Fuel Rate<br>Vehicle Mileage"]:::defineCol
+        D1["<div style='padding:10px;'>Define the parameters from a<br>System Perspective<br><br><b style='font-size:20px; color:#dc3545;'>What is it?</b><br><hr style='margin:10px 0; border-color:#ccc;'/>• Total Distance in km<br>• Current Fuel Rate<br>• Vehicle Mileage</div>"]:::defineCol
     end
 
-    subgraph Col2 ["II. Describe the Math"]
+    subgraph Col2 ["<b style='font-size:22px;'>II. Describe the Math</b>"]
         direction TB
-        M1["Describe Cost Algorithm<br><b>What is the total cost?</b><br><br>Total = Distance / Mileage * Fuel Rate"]:::describeCol
-        M2["Describe Fair Split<br><b>How is it divided?</b><br><br>Cost Per Person = Total / Riders + Driver"]:::describeCol
+        M1["<div style='padding:10px;'>Describe Cost Algorithm<br><b style='font-size:20px; color:#dc3545;'>What is the total cost?</b><br><hr style='margin:10px 0; border-color:#ccc;'/>Total = (Distance / Mileage) * Fuel Rate</div>"]:::describeCol
+        M2["<div style='padding:10px;'>Describe Fair Split<br><b style='font-size:20px; color:#dc3545;'>How is it divided?</b><br><hr style='margin:10px 0; border-color:#ccc;'/>Cost Per Person = Total / (Riders + Driver)</div>"]:::describeCol
         M1 ~~~ M2
     end
 
-    subgraph Col3 ["III. Explain Impact & Utility"]
+    subgraph Col3 ["<b style='font-size:22px;'>III. Explain Impact & Utility</b>"]
         direction TB
-        E1("Explain how and why<br>campus traffic reduces<br><br><b>Why did it happen?</b><br>Consolidating 4 solo trips into 1 vehicle"):::explainCol
-        E2("Explain how the platform<br>is useful<br><br><b>What is the value?</b><br>Reduces financial burden on students"):::explainCol
-        E3("✨ Gemini AI Storyteller<br><br><b>Engaging Users:</b><br>Generates personalized, shareable summaries of CO2 saved"):::explainAI
+        E1("<div style='padding:10px;'>Explain how and why<br>campus traffic reduces<br><br><b style='font-size:20px; color:#8a2be2;'>Why did it happen?</b><br><hr style='margin:10px 0; border-color:#ccc;'/>Consolidating 4 solo trips into 1 vehicle</div>"):::explainCol
+        E2("<div style='padding:10px;'>Explain how the platform<br>is useful<br><br><b style='font-size:20px; color:#8a2be2;'>What is the value?</b><br><hr style='margin:10px 0; border-color:#ccc;'/>Reduces financial burden on students</div>"):::explainCol
+        E3("<div style='padding:10px;'>✨ Gemini AI Storyteller<br><br><b style='font-size:20px; color:#9c27b0;'>Engaging Users:</b><br><hr style='margin:10px 0; border-color:#ccc;'/>Generates personalized, shareable<br>summaries of CO2 saved</div>"):::explainAI
         E1 ~~~ E2 ~~~ E3
     end
 
-    subgraph Col4 ["IV. Evaluate & Predict ML Future"]
+    subgraph Col4 ["<b style='font-size:22px;'>IV. Evaluate & Predict ML Future</b>"]
         direction TB
-        P1((("<b>Evaluate the reliability</b><br><br>Strengths: Verified KRMU DB<br>Weaknesses: Dependency on Maps API"))):::evaluateCloud
-        P2((("<b>Predict future features</b><br><br>How will the system evolve?<br>Implementing predictive ML for surge demand"))):::evaluateCloud
+        P1((("<div style='padding:10px;'><b style='font-size:20px; color:#00bcd4;'>Evaluate the reliability</b><br><hr style='margin:10px 0; border-color:#00bcd4;'/><b>Strengths:</b> Verified KRMU DB<br><b>Weaknesses:</b> Dependency on Maps API</div>"))):::evaluateCloud
+        P2((("<div style='padding:10px;'><b style='font-size:20px; color:#00bcd4;'>Predict future features</b><br><hr style='margin:10px 0; border-color:#00bcd4;'/><b>How will the system evolve?</b><br>Implementing predictive ML<br>for surge demand</div>"))):::evaluateCloud
         P1 ~~~ P2
     end
 
