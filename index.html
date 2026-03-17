@@ -66,7 +66,7 @@ flowchart TD
 
     Start(("App Launch<br>Data Collection")):::startEnd --> Auth["Access K.R. Mangalam SSO"]:::processBlue
     Auth --> Query{"Formulate Request:<br>Ride Post or Search"}:::processRed
-    Query --> Download[/"Download API Data:<br>Traffic & Vehicle Specs"/]:::docGrey
+    Query --> Download[/"Download API & App Data:<br>Traffic, Vehicle Specs, &<br>User Schedules"/]:::docGrey
     Download --> Preprocess{"Data Preprocessing:<br>Clean Data & Validate IDs"}:::processRed
     Preprocess --> Import{"Import Data to<br>MongoDB Backend"}:::decisionYellow
     Import --> MatchAlgo{"Route Analysis:<br>Identify Spatial Matches"}:::processRed
@@ -104,7 +104,7 @@ flowchart TD
         V2 -->|Fallback| V4["Upload College ID Card<br>(Processed via OCR)"]:::innerBox
         V3 --> V5["Query University DB API<br>(Fetch Academic Year & Branch)"]:::highlightBox
         V4 --> V6["AI/Admin Verification"]:::innerBox
-        V5 --> V7["Status: Verified Student Profile"]:::innerBox
+        V5 --> V7["Status: Verified Student/Teacher Profile<br><b>(Most important to create trust)</b>"]:::highlightBox
         V6 --> V7
     end
     class AuthFlow mainBox
@@ -190,10 +190,10 @@ flowchart LR
         E1 ~~~ E2 ~~~ E3
     end
 
-    subgraph Col4 ["<b style='font-size:22px;'>IV. Evaluate & Predict ML Future</b>"]
+    subgraph Col4 ["<b style='font-size:22px;'>IV. Evaluate & Future Improvements</b>"]
         direction TB
         P1((("<div style='padding:10px;'><b style='font-size:20px; color:#00bcd4;'>Evaluate the reliability</b><br><hr style='margin:10px 0; border-color:#00bcd4;'/><b>Strengths:</b> Verified KRMU DB<br><b>Weaknesses:</b> Dependency on Maps API</div>"))):::evaluateCloud
-        P2((("<div style='padding:10px;'><b style='font-size:20px; color:#00bcd4;'>Predict future features</b><br><hr style='margin:10px 0; border-color:#00bcd4;'/><b>How will the system evolve?</b><br>Implementing predictive ML<br>for surge demand</div>"))):::evaluateCloud
+        P2((("<div style='padding:10px;'><b style='font-size:20px; color:#00bcd4;'>Future Requirements &<br>Improvements</b><br><hr style='margin:10px 0; border-color:#00bcd4;'/><b>Adaptive Ideology:</b><br>Understand the schedule of students, teachers, and users to update the platform's ideology and improve capacity according to real-time demand.</div>"))):::evaluateCloud
         P1 ~~~ P2
     end
 
